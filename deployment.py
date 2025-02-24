@@ -17,6 +17,12 @@ client = genai.Client(api_key=api_key)
 # Streamlit App Title
 st.title("Campaign Reach Optimization & SHAP Analysis with Agentic AI")
 
+# User Question Prompt
+user_query = st.text_input("Ask Gemini AI to optimize campaign strategies before proceeding:")
+if not user_query:
+    st.warning("Please enter a question to proceed.")
+    st.stop()
+
 # User Inputs for Campaign Parameters
 st.sidebar.header("Campaign Settings")
 NUM_CAMPAIGNS = st.sidebar.slider("Number of Campaigns", min_value=3, max_value=10, value=5)
@@ -92,21 +98,19 @@ shap.summary_plot(shap_values, X, show=False)
 st.pyplot(fig)
 
 # Campaign Optimization with Agentic AI
-user_query = st.text_input("Ask Gemini AI to optimize campaign strategies:")
-if user_query:
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=f"""You are an AI assistant specializing in marketing campaign optimization. Based on user inputs and campaign constraints, generate an optimized allocation strategy.
-            Campaign Data:
-            {df.to_string()}
+try:
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=f"""You are an AI assistant specializing in marketing campaign optimization. Based on user inputs and campaign constraints, generate an optimized allocation strategy.
+        Campaign Data:
+        {df.to_string()}
 
-            User Query: {user_query}"""
-        )
-        optimized_strategy = response.text
-        st.write(optimized_strategy)
-    except Exception as e:
-        st.error(f"Error calling Gemini API: {e}")
+        User Query: {user_query}"""
+    )
+    optimized_strategy = response.text
+    st.write(optimized_strategy)
+except Exception as e:
+    st.error(f"Error calling Gemini API: {e}")
 
 # Campaign Allocation Logic
 base_allocation = np.minimum(MAX_CUSTOMERS_PER_CAMPAIGN, 25000)
