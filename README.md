@@ -15,3 +15,6 @@ Deployment is currently on Streamlit Cloud.
 
 # What AI is used?
 This project is using Gemini API key as the prompt for output generation. 
+
+# Note
+This project is currently under school FYP project. Hence, the code is actually implemented with GitHub account linked with school account. After graduation, I will shift the work to this account
